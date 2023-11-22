@@ -98,14 +98,14 @@ for i in range(epoch):
         optimizer.step()
         epoch_loss_train += loss.item()
 
-    epoch_loss = 0
+    epoch_loss_val = 0
     for j, batch in tqdm(enumerate(x_test)):
         x, y = batch
         x_hat = model(x.to(device))
         loss = loss_function(x_hat, x.to(device))*10
-        epoch_loss += loss.item()
+        epoch_loss_val += loss.item()
 
-    wandb.log({"Train Loss": epoch_loss_train, "Test Loss": epoch_loss, "Validation Image": wandb.Image(torch.cat((x[0], x_hat[0]), dim=2).detach().numpy())})
+    wandb.log({"Train Loss": epoch_loss_train, "Test Loss": epoch_loss_val, "Validation Image": wandb.Image(torch.cat((x[0], x_hat[0]), dim=2).detach().numpy())})
 
     torch.save(model, f"{SAVE_PATH}/model/model{i}.pth")
     torch.save(model.encoder, f"{SAVE_PATH}/encoder/encoder{i}.pth")
