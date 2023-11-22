@@ -1,6 +1,5 @@
 from torch.utils.data import Dataset
-from torchvision import transforms
-from torchvision.io import read_image, ImageReadMode
+import torch
 
 import pandas as pd
 
@@ -10,15 +9,13 @@ class UResNetDataset(Dataset):
     def __init__(self, img_csv, PATH_BW, PATH_RGB):
         self.PATH_BW = PATH_BW
         self.PATH_RGB = PATH_RGB
-        self.img_csv = pd.read_csv(img_csv)
+        self.tensor_csv = pd.read_csv(img_csv)
 
     def __len__(self):
-        return len(self.img_csv)
+        return len(self.tensor_csv)
 
     def __getitem__(self, index):
-        img_name = self.img_csv.iloc[index, 0]
-        image = [read_image(f"{self.PATH_BW}/{img_name}"), read_image(f"{self.PATH_RGB}/{img_name}", ImageReadMode.RGB)]
+        tensor_name = self.tensor_csv.iloc[index, 0]
+        tensor = [torch.load(f"{self.PATH_BW}/{tensor_name}"), torch.load(f"{self.PATH_RGB}/{tensor_name}")]
         
-        #On normalise les données
-        image = [(img - 127.5)/127.5 for img in image]
-        return image[0], image[1]
+        return tensor[0], tensor[1]
