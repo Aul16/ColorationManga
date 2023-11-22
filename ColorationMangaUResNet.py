@@ -56,7 +56,7 @@ model = UResNet(n=16, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHA
 loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-epoch = 5
+epoch = 100
 for i in range(epoch):
 
     epoch_loss_train = 0

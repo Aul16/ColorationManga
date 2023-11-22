@@ -5,7 +5,7 @@ class Identity(nn.Module):
         super().__init__()
         self.conv1 = nn.Conv2d(channel, channel, 3, 1, padding='same')
         self.batch1 = nn.BatchNorm2d(channel)
-        self.conv2 = nn.Conv2d(channel, channel, 4, 1, padding='same')
+        self.conv2 = nn.Conv2d(channel, channel, 5, 1, padding='same')
         self.batch2 = nn.BatchNorm2d(channel)
         self.conv3 = nn.Conv2d(channel, channel, 5, 1, padding='same')
         self.batch3 = nn.BatchNorm2d(channel)

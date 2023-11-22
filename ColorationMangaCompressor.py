@@ -50,7 +50,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 50,
+    "epochs": 5,
     })
 
 model = AutoEncoderBW(ENCODER_CHANNEL_OUTPUT).to(device)
@@ -105,7 +105,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 50,
+    "epochs": 5,
     })
 
 model = AutoEncoderRGB(DECODER_CHANNEL_INTPUT).to(device)
