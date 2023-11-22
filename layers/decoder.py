@@ -2,11 +2,11 @@ from torch import nn
 from .up_scale import up_scale
 
 class Decoder(nn.Module):
-    def __init__(self, n, *args, **kwargs) -> None:
+    def __init__(self, n, output_channel, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.up3 = up_scale(n, n)
         self.up4 = up_scale(n, n)
-        self.up5 = up_scale(n, 1, False)
+        self.up5 = up_scale(n, output_channel, False)
         self.tanh = nn.Tanh()
 
     def forward(self, x):
