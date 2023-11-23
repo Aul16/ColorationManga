@@ -14,6 +14,14 @@ wandb.login()
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
 
+os.makedirs("./saves", exist_ok=True)
+os.makedirs("./saves/BW", exist_ok=True)
+os.makedirs("./saves/RGB", exist_ok=True)
+os.makedirs("./saves/uresnet", exist_ok=True)
+os.makedirs("./compressed_dataset", exist_ok=True)
+os.makedirs("./compressed_dataset/bw", exist_ok=True)
+os.makedirs("./compressed_dataset/rgb", exist_ok=True)
+
 BATCH_SIZE = 8
 IMG_SHAPE = (1024, 768)
 
