@@ -6,6 +6,8 @@ import wandb
 import os
 
 from layers.uresnet import UResNet
+from layers.autoencoderbw import AutoEncoderBW
+from layers.autoencoderrgb import AutoEncoderRGB
 from datasets_loader.compressed_dataloader import UResNetDataset
 
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
@@ -56,6 +58,8 @@ run = wandb.init(
     })
 
 model = UResNet(n=16, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INTPUT).to(device)
+decoderbw = torch.load(f"{SAVE_PATH}/BW/decoder4.pth").to(device)
+decoderrgb = torch.load(f"{SAVE_PATH}/RGB/decoder4.pth").to(device)
 
 loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -63,7 +67,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 epoch = 100
 for i in range(epoch):
 
-    epoch_loss_train = 0
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -71,18 +74,19 @@ for i in range(epoch):
         loss = loss_function(y_hat, y.to(device))*10
         loss.backward()
         optimizer.step()
-        epoch_loss_train += loss.item()
+        wandb.log({"Train Loss": loss.item(), "Epoch": i})
 
-
-    epoch_loss_val = 0
     for batch in x_test:
         x, y = batch
         y_hat = model(y.to(device))
         loss = loss_function(y_hat, y.to(device))*10
-        epoch_loss_val += loss.item()
+        wandb.log({"Test Loss": loss.item(), "Epoch": i})
 
 
-    wandb.log({"Train Loss": epoch_loss_train, "Test Loss": epoch_loss_val, "Validation Image": wandb.Image(torch.flatten(torch.cat((y[0], y_hat[0]), dim=2), end_dim=1).detach().numpy())})
+    image_bw = decoderbw(y.to(device))
+    image_bw = image_bw.expand(-1, 3, -1, -1)
+    image_rgb = decoderrgb(y_hat)
+    wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((image_bw[0], image_rgb[0]), dim=2).permute(1,2,0).detach().numpy())})
 
     torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
 

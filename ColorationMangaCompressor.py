@@ -64,7 +64,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 epoch = 5
 for i in range(epoch):
-    epoch_loss_train = 0
 
     for batch in x_train:
         optimizer.zero_grad()
@@ -73,20 +72,20 @@ for i in range(epoch):
         loss = loss_function(x_hat, x.to(device))*10
         loss.backward()
         optimizer.step()
-        epoch_loss_train += loss.item()
+        wandb.log({"Train Loss": loss.item(), "Epoch": i})
 
-    epoch_loss_val = 0
     for batch in x_test:
         x, y = batch
         x_hat = model(x.to(device))
         loss = loss_function(x_hat, x.to(device))*10
-        epoch_loss_val += loss.item()
+        wandb.log({"Test Loss": loss.item(), "Epoch": i})
 
 
-    wandb.log({"Train Loss": epoch_loss_train, "Test Loss": epoch_loss_val, "Validation Image": wandb.Image(torch.cat((x[0], x_hat[0].cpu()), dim=2).detach().numpy())})
+    wandb.log({"Validation Image": wandb.Image(torch.cat((x[0], x_hat[0].cpu()), dim=2).detach().numpy()), "Epoch": i})
 
     torch.save(model, f"{SAVE_PATH}/BW/model{i}.pth")
     torch.save(model.encoder, f"{SAVE_PATH}/BW/encoder{i}.pth")
+    torch.save(model.decoder, f"{SAVE_PATH}/BW/decoder{i}.pth")
 
 wandb.finish()
 
@@ -120,7 +119,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 epoch = 5
 for i in range(epoch):
 
-    epoch_loss_train = 0
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -128,16 +126,15 @@ for i in range(epoch):
         loss = loss_function(y_hat, y.to(device))*10
         loss.backward()
         optimizer.step()
-        epoch_loss_train += loss.item()
+        wandb.log({"Train Loss": loss.item(), "Epoch": i})
 
-    epoch_loss_val = 0
     for batch in x_test:
         x, y = batch
         y_hat = model(y.to(device))
         loss = loss_function(y_hat, y.to(device))*10
-        epoch_loss_val += loss.item()
+        wandb.log({"Test Loss": loss.item(), "Epoch": i})
 
-    wandb.log({"Train Loss": epoch_loss_train, "Test Loss": epoch_loss_val, "Validation Image": wandb.Image(torch.cat((y[0], y_hat[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
+    wandb.log({"Epoch": i,"Validation Image": wandb.Image(torch.cat((y[0], y_hat[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
 
     torch.save(model, f"{SAVE_PATH}/RGB/model{i}.pth")
     torch.save(model.encoder, f"{SAVE_PATH}/RGB/encoder{i}.pth")

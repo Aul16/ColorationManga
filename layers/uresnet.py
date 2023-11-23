@@ -19,7 +19,8 @@ class UResNet(nn.Module):
         self.up2 = up_scale(n * 8, n * 4)
         self.up3 = up_scale(n * 4, n * 2)
         self.up4 = up_scale(n * 2, n)
-        self.up5 = up_scale(n, channel_out)
+        self.up5 = up_scale(n, channel_out, False)
+        self.tanh = nn.Tanh()
 
     def forward(self, entry):
         x1 = self.down1(entry)
@@ -32,6 +33,7 @@ class UResNet(nn.Module):
         entry = self.up3(entry + x3)
         entry = self.up4(entry + x2)
         entry = self.up5(entry + x1)
+        entry = self.tanh(entry)
         return entry
     
 if __name__ == "__main__":
