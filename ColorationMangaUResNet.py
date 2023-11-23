@@ -52,7 +52,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 50,
+    "epochs": 100,
     })
 
 model = UResNet(n=16, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INTPUT).to(device)
