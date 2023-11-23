@@ -101,7 +101,6 @@ for i in range(epoch):
         if j > 3:
             break
 
-
     wandb.log({"Validation Image": wandb.Image(torch.cat((x[0], x_hat[0].cpu()), dim=2).detach().numpy()), "Epoch": i})
 
     torch.save(model, f"{SAVE_PATH}/BW/model{i}.pth")

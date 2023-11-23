@@ -39,9 +39,6 @@ x_test = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 device = torch.device('cuda' if torch.cuda.is_available() else torch.device('cpu'))
 
 
-
-
-
 ##############################################################################################################
 #
 #  Train UResNet for RGB images
@@ -78,7 +75,6 @@ optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.001)
 epoch = 100
 for i in range(epoch):
 
-    j = 0
     for batch in x_train:
         ############################################################
         real_bw, real_rgb = batch
@@ -134,20 +130,13 @@ for i in range(epoch):
                 "Epoch": i,
                 "Discriminator Loss": disc_loss.item(),
                 "UResNet Discriminator Loss": unet_disc_loss.item()})
-        j += 1
-        if j > 3:
-            break
-
+        
     
-    j = 0
     for batch in x_test:
         real_bw, real_rgb = batch
         fake_rgb = model(real_bw.to(device))
         loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
         wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
-        j += 1
-        if j > 3:
-            break
 
 
     image_bw = decoderbw(real_bw.to(device))
@@ -155,6 +144,7 @@ for i in range(epoch):
     image_rgb = decoderrgb(fake_rgb)
     wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((image_bw[0], image_rgb[0]), dim=2).permute(1,2,0).detach().numpy())})
 
-    #torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
+    torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
+    os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models
 
 wandb.finish()
