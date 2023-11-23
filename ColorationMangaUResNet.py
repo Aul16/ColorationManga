@@ -3,9 +3,13 @@ from torch.utils.data import DataLoader
 from torch import nn
 
 import wandb
+import os
 
 from layers.uresnet import UResNet
 from datasets_loader.compressed_dataloader import UResNetDataset
+
+PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
+os.chdir(PATH)  # Change the current working directory to the path of the files
 
 PATH_RGB = "./compressed_dataset/rgb"
 PATH_BW = "./compressed_dataset/bw"

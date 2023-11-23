@@ -1,11 +1,14 @@
 import torch
-from torchvision.utils import save_image
+import os
 
 from layers.autoencoderbw import AutoEncoderBW
 from layers.autoencoderrgb import AutoEncoderRGB
 from datasets_loader.image_dataloader import AutoEncoderDataset
 
 IMG_SHAPE = (1024, 768)
+
+PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
+os.chdir(PATH)  # Change the current working directory to the path of the files
 
 PATH_RGB = "./dataset/rgb"
 PATH_BW = "./dataset/bw"

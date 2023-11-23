@@ -1,5 +1,8 @@
 from torch import nn
-from .identity import Identity
+try:
+    from .identity import Identity
+except:
+    from identity import Identity
 
 class down_scale(nn.Module):
     def __init__(self, channel_in, channel_out, activation=True):

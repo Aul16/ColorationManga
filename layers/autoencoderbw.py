@@ -1,5 +1,9 @@
-from .encoder import Encoder
-from .decoder import Decoder
+try:
+    from .encoder import Encoder
+    from .decoder import Decoder
+except:
+    from encoder import Encoder
+    from decoder import Decoder
 import torch.nn as nn
 
 
@@ -13,3 +17,13 @@ class AutoEncoderBW(nn.Module):
         x = self.encoder(x)
         x = self.decoder(x)
         return x
+    
+if __name__ == "__main__":
+    import os
+    try:
+        from torchinfo import summary
+    except:
+        os.system("pip install torchinfo")
+        from torchinfo import summary
+    autoencoder = AutoEncoderBW(8)
+    print(summary(autoencoder, input_size=(8, 1, 1024, 768)))
