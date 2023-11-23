@@ -10,11 +10,11 @@ class Decoder(nn.Module):
     def __init__(self, n, output_channel, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.identity = Identity(n)
-        self.up3 = up_scale(n, n//2)
-        self.identity1 = Identity(n//2)
-        self.up4 = up_scale(n//2, n//2)
-        self.identity2 = Identity(n//2)
-        self.up5 = up_scale(n//2, output_channel, False)
+        self.up3 = up_scale(n, n)
+        self.identity1 = Identity(n)
+        self.up4 = up_scale(n, n)
+        self.identity2 = Identity(n)
+        self.up5 = up_scale(n, output_channel, False)
         self.tanh = nn.Tanh()
 
     def forward(self, x):

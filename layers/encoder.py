@@ -9,9 +9,9 @@ except:
 class Encoder(nn.Module):
     def __init__(self, n, input_channel, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.down1 = down_scale(input_channel, n//2)
-        self.identity = Identity(n//2)
-        self.down2 = down_scale(n//2, n)
+        self.down1 = down_scale(input_channel, n)
+        self.identity = Identity(n)
+        self.down2 = down_scale(n, n)
         self.identity1 = Identity(n)
         self.down3 = down_scale(n, n)
         self.identity2 = Identity(n, False)
