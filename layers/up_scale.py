@@ -16,7 +16,7 @@ class up_scale(nn.Module):
         self.id2 = nn.Conv2d(channel_out, channel_out, 5, stride=1, padding='same')
         self.batch_id2 = nn.BatchNorm2d(channel_out)
         self.identity = Identity(channel_out, activation)
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU(0.2)
 
     def forward(self, x):
         x1 = x

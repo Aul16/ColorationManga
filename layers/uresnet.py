@@ -43,5 +43,5 @@ if __name__ == "__main__":
     except:
         os.system("pip install torchinfo")
         from torchinfo import summary
-    autoencoder = UResNet(16, 8, 8)
+    autoencoder = UResNet(16, 8, 24)
     print(summary(autoencoder, input_size=(8, 8, 128, 96)))

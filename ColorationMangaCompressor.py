@@ -22,7 +22,7 @@ os.makedirs("./compressed_dataset", exist_ok=True)
 os.makedirs("./compressed_dataset/bw", exist_ok=True)
 os.makedirs("./compressed_dataset/rgb", exist_ok=True)
 
-BATCH_SIZE = 8
+BATCH_SIZE = 4
 IMG_SHAPE = (1024, 768)
 
 PATH_RGB = "./dataset/rgb"
@@ -31,7 +31,7 @@ CSV_PATH = "./images.csv"
 SAVE_PATH = "./saves"
 
 ENCODER_CHANNEL_OUTPUT = 8
-DECODER_CHANNEL_INTPUT = 8
+DECODER_CHANNEL_INPUT = 24
 
 data = AutoEncoderDataset(CSV_PATH, IMG_SHAPE, PATH_BW, PATH_RGB)
 train_size = int(0.9 * len(data))
@@ -43,8 +43,13 @@ train_dataset, test_dataset = torch.utils.data.random_split(data, [train_size, t
 x_train = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = True)
 x_test = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 
-device = torch.device('cuda' if torch.cuda.is_available() else torch.device('cpu'))
-
+device = (
+    "cuda"
+    if torch.cuda.is_available()
+    else "mps"
+    if torch.backends.mps.is_available()
+    else "cpu"
+)
 
 
 
@@ -73,6 +78,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 epoch = 5
 for i in range(epoch):
 
+    j = 0
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -81,12 +87,19 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
         wandb.log({"Train Loss": loss.item(), "Epoch": i})
+        j += 1
+        if j > 3:
+            break
 
+    j = 0
     for batch in x_test:
         x, y = batch
         x_hat = model(x.to(device))
         loss = loss_function(x_hat, x.to(device))*10
         wandb.log({"Test Loss": loss.item(), "Epoch": i})
+        j += 1
+        if j > 3:
+            break
 
 
     wandb.log({"Validation Image": wandb.Image(torch.cat((x[0], x_hat[0].cpu()), dim=2).detach().numpy()), "Epoch": i})
@@ -119,14 +132,14 @@ run = wandb.init(
     "epochs": 5,
     })
 
-model = AutoEncoderRGB(DECODER_CHANNEL_INTPUT).to(device)
+model = AutoEncoderRGB(DECODER_CHANNEL_INPUT).to(device)
 
 loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 epoch = 5
 for i in range(epoch):
-
+    j = 0
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -135,12 +148,19 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
         wandb.log({"Train Loss": loss.item(), "Epoch": i})
+        j += 1
+        if j > 3:
+            break
 
+    j = 0
     for batch in x_test:
         x, y = batch
         y_hat = model(y.to(device))
         loss = loss_function(y_hat, y.to(device))*10
         wandb.log({"Test Loss": loss.item(), "Epoch": i})
+        j += 1
+        if j > 3:
+            break
 
     wandb.log({"Epoch": i,"Validation Image": wandb.Image(torch.cat((y[0], y_hat[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
 

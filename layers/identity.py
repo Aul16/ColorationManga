@@ -9,7 +9,7 @@ class Identity(nn.Module):
         self.batch2 = nn.BatchNorm2d(channel)
         self.conv3 = nn.Conv2d(channel, channel, 5, 1, padding='same')
         self.batch3 = nn.BatchNorm2d(channel)
-        self.relu = nn.ReLU()
+        self.relu = nn.LeakyReLU(0.2)
         self.activation = activation
 
     def forward(self, x):
