@@ -1,5 +1,9 @@
-from .down_scale import down_scale
-from .up_scale import up_scale
+try:
+    from .down_scale import down_scale
+    from .up_scale import up_scale
+except:
+    from down_scale import down_scale
+    from up_scale import up_scale
 import torch.nn as nn
 
 
@@ -29,3 +33,13 @@ class UResNet(nn.Module):
         entry = self.up4(entry + x2)
         entry = self.up5(entry + x1)
         return entry
+    
+if __name__ == "__main__":
+    import os
+    try:
+        from torchinfo import summary
+    except:
+        os.system("pip install torchinfo")
+        from torchinfo import summary
+    autoencoder = UResNet(16, 8, 8)
+    print(summary(autoencoder, input_size=(8, 8, 128, 96)))
