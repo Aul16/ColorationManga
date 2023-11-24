@@ -16,12 +16,13 @@ class Discriminator(nn.Module):
             down_scale(n*4, n*8),
             down_scale(n*8, 1)
         )
-        self.linear = nn.Linear(12, 1)
+        self.linear = nn.LazyLinear(1)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x, y):
         x = torch.cat((x, y), dim=1)
         x = self.cnn(x)
+        print(x.shape)
         x = self.flatten(x)
         x = self.linear(x)
         x = self.sigmoid(x)
