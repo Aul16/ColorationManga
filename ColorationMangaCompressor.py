@@ -78,7 +78,6 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 epoch = 5
 for i in range(epoch):
 
-    j = 0
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -87,19 +86,12 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
         wandb.log({"Train Loss": loss.item(), "Epoch": i})
-        j += 1
-        if j > 3:
-            break
 
-    j = 0
     for batch in x_test:
         x, y = batch
         x_hat = model(x.to(device))
         loss = loss_function(x_hat, x.to(device))*10
         wandb.log({"Test Loss": loss.item(), "Epoch": i})
-        j += 1
-        if j > 3:
-            break
 
     wandb.log({"Validation Image": wandb.Image(torch.cat((x[0], x_hat[0].cpu()), dim=2).detach().numpy()), "Epoch": i})
 
@@ -138,7 +130,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 epoch = 5
 for i in range(epoch):
-    j = 0
+
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -147,19 +139,12 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
         wandb.log({"Train Loss": loss.item(), "Epoch": i})
-        j += 1
-        if j > 3:
-            break
 
-    j = 0
     for batch in x_test:
         x, y = batch
         y_hat = model(y.to(device))
         loss = loss_function(y_hat, y.to(device))*10
         wandb.log({"Test Loss": loss.item(), "Epoch": i})
-        j += 1
-        if j > 3:
-            break
 
     wandb.log({"Epoch": i,"Validation Image": wandb.Image(torch.cat((y[0], y_hat[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
 
