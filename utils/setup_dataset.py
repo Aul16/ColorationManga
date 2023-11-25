@@ -2,10 +2,10 @@ import os
 import cv2 as cv
 from multiprocessing import Pool
 
-PATH = "../dataset"
-CSV_PATH = "../images_Train_DGX.csv"
+PATH = "./dataset"
+CSV_PATH = "./images.csv"
 
-Color_img = os.listdir(f"{PATH}/color_full/")
+Color_img = os.listdir(f"{PATH}/rgb/")
 
 def convert(img):
     try:
@@ -14,7 +14,7 @@ def convert(img):
         background = cv.morphologyEx(image, cv.MORPH_DILATE, SE)
         image = cv.divide(image, background, scale=255)
         image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
-        cv.imwrite(f"{PATH}bw/{img}", image)
+        cv.imwrite(f"{PATH}/bw/{img}", image)
     except: pass
 
 

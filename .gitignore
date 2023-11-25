@@ -5,3 +5,4 @@ wandb
 saves
 datasets_loader/__pycache__
 compressed_dataset
+.vscode

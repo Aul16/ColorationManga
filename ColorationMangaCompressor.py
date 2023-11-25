@@ -22,7 +22,7 @@ os.makedirs("./compressed_dataset", exist_ok=True)
 os.makedirs("./compressed_dataset/bw", exist_ok=True)
 os.makedirs("./compressed_dataset/rgb", exist_ok=True)
 
-BATCH_SIZE = 4
+BATCH_SIZE = 8
 IMG_SHAPE = (1024, 768)
 
 PATH_RGB = "./dataset/rgb"
