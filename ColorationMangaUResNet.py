@@ -21,7 +21,7 @@ SAVE_PATH = "./saves"
 
 wandb.login()
 
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 
 ENCODER_CHANNEL_OUTPUT = 16
 DECODER_CHANNEL_INPUT = 48
@@ -45,6 +45,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else torch.device('cpu
 #
 ##############################################################################################################
 
+epoch = 100
 run = wandb.init(
     # Nom du Projet
     project="Coloration Manga",
@@ -52,7 +53,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 100,
+    "epochs": epoch,
     "batch_size": BATCH_SIZE,
     "loss_function": "MSE",
     "architecture": "UResNet",
@@ -72,7 +73,6 @@ loss_mse = nn.MSELoss()
 optimizer_unet = torch.optim.Adam(model.parameters(), lr=0.001)
 optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.001)
 
-epoch = 100
 for i in range(epoch):
 
     for batch in x_train:

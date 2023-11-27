@@ -18,11 +18,12 @@ os.makedirs("./saves", exist_ok=True)
 os.makedirs("./saves/BW", exist_ok=True)
 os.makedirs("./saves/RGB", exist_ok=True)
 os.makedirs("./saves/uresnet", exist_ok=True)
+os.makedirs("./saves/uresnet_no_comp", exist_ok=True)
 os.makedirs("./compressed_dataset", exist_ok=True)
 os.makedirs("./compressed_dataset/bw", exist_ok=True)
 os.makedirs("./compressed_dataset/rgb", exist_ok=True)
 
-BATCH_SIZE = 8
+BATCH_SIZE = 24
 IMG_SHAPE = (1024, 768)
 
 PATH_RGB = "./dataset/rgb"
@@ -111,7 +112,11 @@ torch.cuda.empty_cache()
 ##############################################################################################################
 
 
-
+# BATCH_SIZE  for rgb images
+BATCH_SIZE = 8
+#On charge notre dataset dans un dataloader
+x_train = DataLoader(train_dataset, batch_size = BATCH_SIZE, shuffle = True)
+x_test = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 
 
 ##############################################################################################################

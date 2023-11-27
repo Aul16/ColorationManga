@@ -1,3 +1,4 @@
+from re import S
 import torch
 from torch.utils.data import DataLoader
 from torch import nn
@@ -135,7 +136,7 @@ for i in range(epoch):
         wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
 
     wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((real_bw[0].cpu(), real_rgb[0].cpu(), fake_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
-    torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
+    torch.save(model, f"{SAVE_PATH}/uresnet_no_comp/uresnet{i}.pth")
     os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models
 
 wandb.finish()
