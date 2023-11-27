@@ -12,6 +12,7 @@ from layers.disciminator import Discriminator
 
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
+torch.cuda.empty_cache()
 
 PATH_RGB = "./dataset/rgb"
 PATH_BW = "./dataset/bw"
@@ -128,6 +129,7 @@ for i in range(epoch):
                 "Discriminator Loss": disc_loss.item(),
                 "UResNet Discriminator Loss": unet_disc_loss.item()})
         
+    torch.cuda.empty_cache()
     
     for batch in x_test:
         real_bw, real_rgb = batch
@@ -135,6 +137,8 @@ for i in range(epoch):
         loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
         wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
 
+    torch.cuda.empty_cache()
+    
     wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((real_bw[0].cpu(), real_rgb[0].cpu(), fake_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
     torch.save(model, f"{SAVE_PATH}/uresnet_no_comp/uresnet{i}.pth")
     os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models

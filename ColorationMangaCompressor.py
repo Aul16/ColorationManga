@@ -13,6 +13,7 @@ wandb.login()
 
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
+torch.cuda.empty_cache()
 
 os.makedirs("./saves", exist_ok=True)
 os.makedirs("./saves/BW", exist_ok=True)

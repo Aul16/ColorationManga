@@ -13,6 +13,7 @@ from layers.disciminator import Discriminator
 
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
+torch.cuda.empty_cache()
 
 PATH_RGB = "./compressed_dataset/rgb"
 PATH_BW = "./compressed_dataset/bw"
@@ -131,12 +132,15 @@ for i in range(epoch):
                 "Discriminator Loss": disc_loss.item(),
                 "UResNet Discriminator Loss": unet_disc_loss.item()})
         
+    torch.cuda.empty_cache()
     
     for batch in x_test:
         real_bw, real_rgb = batch
         fake_rgb = model(real_bw.to(device))
         loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
         wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
+        
+    torch.cuda.empty_cache()
 
 
     image_bw = decoderbw(real_bw.to(device))
