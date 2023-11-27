@@ -15,7 +15,8 @@ def convert(img):
         image = cv.divide(image, background, scale=255)
         image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
         cv.imwrite(f"{PATH}/bw/{img}", image)
-    except: pass
+    except Exception as e:
+        print(e)
 
 
 with Pool() as p:

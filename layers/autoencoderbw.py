@@ -27,4 +27,4 @@ if __name__ == "__main__":
         os.system("pip install torchinfo")
         from torchinfo import summary
     autoencoder = AutoEncoderBW(16)
-    print(summary(autoencoder, input_size=(24, 1, 1024, 768)))
+    print(summary(autoencoder, input_size=(32, 1, 1024, 768)))
