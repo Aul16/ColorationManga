@@ -73,6 +73,7 @@ optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.001)
 epoch = 100
 for i in range(epoch):
 
+    model.train()
     for batch in x_train:
         ############################################################
         real_bw, real_rgb = batch
@@ -131,12 +132,13 @@ for i in range(epoch):
         
     torch.cuda.empty_cache()
     
-    for batch in x_test:
-        real_bw, real_rgb = batch
-        fake_rgb = model(real_bw.to(device))
-        loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
-        wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
-
+    model.eval()
+    with torch.no_grad():
+        for batch in x_test:
+            real_bw, real_rgb = batch
+            fake_rgb = model(real_bw.to(device))
+            loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
+            wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
     torch.cuda.empty_cache()
     
     wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((real_bw[0].cpu(), real_rgb[0].cpu(), fake_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})

@@ -84,7 +84,8 @@ loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 for i in range(epoch):
-
+    
+    model.train()
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -93,14 +94,15 @@ for i in range(epoch):
         loss.backward()
         optimizer.step()
         wandb.log({"Train Loss": loss.item(), "Epoch": i})
-
     torch.cuda.empty_cache()
     
-    for batch in x_test:
-        x, y = batch
-        x_hat = model(x.to(device))
-        loss = loss_function(x_hat, x.to(device))*10
-        wandb.log({"Test Loss": loss.item(), "Epoch": i})
+    model.eval()
+    with torch.no_grad():
+        for batch in x_test:
+            x, y = batch
+            x_hat = model(x.to(device))
+            loss = loss_function(x_hat, x.to(device))*10
+            wandb.log({"Test Loss": loss.item(), "Epoch": i})
         
     torch.cuda.empty_cache()
 
@@ -152,7 +154,7 @@ loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 for i in range(epoch):
-
+    model.train()
     for batch in x_train:
         optimizer.zero_grad()
         x, y = batch
@@ -164,11 +166,13 @@ for i in range(epoch):
         
     torch.cuda.empty_cache()
 
-    for batch in x_test:
-        x, y = batch
-        y_hat = model(y.to(device))
-        loss = loss_function(y_hat, y.to(device))*10
-        wandb.log({"Test Loss": loss.item(), "Epoch": i})
+    model.eval()
+    with torch.no_grad():
+        for batch in x_test:
+            x, y = batch
+            y_hat = model(y.to(device))
+            loss = loss_function(y_hat, y.to(device))*10
+            wandb.log({"Test Loss": loss.item(), "Epoch": i})
         
     torch.cuda.empty_cache()
 
