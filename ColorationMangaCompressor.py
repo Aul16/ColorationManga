@@ -22,7 +22,7 @@ os.makedirs("./compressed_dataset", exist_ok=True)
 os.makedirs("./compressed_dataset/bw", exist_ok=True)
 os.makedirs("./compressed_dataset/rgb", exist_ok=True)
 
-BATCH_SIZE = 16
+BATCH_SIZE = 8
 IMG_SHAPE = (1024, 768)
 
 PATH_RGB = "./dataset/rgb"
@@ -62,12 +62,17 @@ device = (
 
 run = wandb.init(
     # Nom du Projet
-    project="Coloration Manga Encoder",
-    name="Encoder 16 channels",
+    project="Coloration Manga",
+    name="Encoder",
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
     "epochs": 5,
+    "batch_size": BATCH_SIZE,
+    "loss_function": "MSE",
+    "architecture": "Encoder",
+    "optimizer": "Adam",
+    "encoder_channel_output": ENCODER_CHANNEL_OUTPUT
     })
 
 model = AutoEncoderBW(ENCODER_CHANNEL_OUTPUT).to(device)
@@ -100,6 +105,8 @@ for i in range(epoch):
     torch.save(model.decoder, f"{SAVE_PATH}/BW/decoder{i}.pth")
 
 wandb.finish()
+torch.cuda.empty_cache()
+
 
 ##############################################################################################################
 
@@ -115,12 +122,17 @@ wandb.finish()
 
 run = wandb.init(
     # Nom du Projet
-    project="Coloration Manga Decoder",
-    name="Decoder 48 channels",
+    project="Coloration Manga",
+    name="Decoder",
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
     "epochs": 5,
+    "batch_size": BATCH_SIZE,
+    "loss_function": "MSE",
+    "architecture": "Decoder",
+    "optimizer": "Adam",
+    "decoder_channel_input": DECODER_CHANNEL_INPUT
     })
 
 model = AutoEncoderRGB(DECODER_CHANNEL_INPUT).to(device)
@@ -153,5 +165,5 @@ for i in range(epoch):
     torch.save(model.decoder, f"{SAVE_PATH}/RGB/decoder{i}.pth")
 
 wandb.finish()
-
+torch.cuda.empty_cache()
 ##############################################################################################################

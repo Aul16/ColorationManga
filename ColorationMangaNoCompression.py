@@ -6,27 +6,25 @@ import wandb
 import os
 
 from layers.uresnet import UResNet
-from layers.autoencoderbw import AutoEncoderBW
-from layers.autoencoderrgb import AutoEncoderRGB
-from datasets_loader.compressed_dataloader import UResNetDataset
+from datasets_loader.image_dataloader import AutoEncoderDataset
 from layers.disciminator import Discriminator
 
 PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
 
-PATH_RGB = "./compressed_dataset/rgb"
-PATH_BW = "./compressed_dataset/bw"
-CSV_PATH = "./compressed_data.csv"
+PATH_RGB = "./dataset/rgb"
+PATH_BW = "./dataset/bw"
+CSV_PATH = "./images.csv"
 SAVE_PATH = "./saves"
 
 wandb.login()
 
-BATCH_SIZE = 16
+BATCH_SIZE = 64
 
-ENCODER_CHANNEL_OUTPUT = 16
-DECODER_CHANNEL_INPUT = 48
+ENCODER_CHANNEL_OUTPUT = 1
+DECODER_CHANNEL_INPUT = 3
 
-data = UResNetDataset(CSV_PATH, PATH_BW, PATH_RGB)
+data = AutoEncoderDataset(CSV_PATH, PATH_BW, PATH_RGB)
 train_size = int(0.9 * len(data))
 test_size = len(data) - train_size
 
@@ -56,16 +54,14 @@ run = wandb.init(
     "batch_size": BATCH_SIZE,
     "loss_function": "MSE",
     "architecture": "UResNet",
-    "dataset": "compressed",
+    "dataset": "dataset",
     "optimizer": "Adam",
     "encoder_channel_output": ENCODER_CHANNEL_OUTPUT,
     "decoder_channel_input": DECODER_CHANNEL_INPUT
     })
 
-model = UResNet(n=16, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INPUT).to(device)
-decoderbw = torch.load(f"{SAVE_PATH}/BW/decoder4.pth").to(device)
-decoderrgb = torch.load(f"{SAVE_PATH}/RGB/decoder4.pth").to(device)
-discriminator = Discriminator(32, 16).to(device)  # Channel in: 32 (24 for RGB and 8 for BW)
+model = UResNet(n=32, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INPUT).to(device)
+discriminator = Discriminator(4, 16).to(device)  # Channel in: 3 (RGB), 1 (BW)
 
 loss_bce = nn.BCELoss()
 loss_mse = nn.MSELoss()
@@ -138,12 +134,7 @@ for i in range(epoch):
         loss_val = loss_mse(fake_rgb, real_rgb.to(device))*10
         wandb.log({"Test Loss": loss_val.item(), "Epoch": i})
 
-
-    image_bw = decoderbw(real_bw.to(device))
-    image_bw = image_bw.expand(-1, 3, -1, -1)
-    image_rgb = decoderrgb(fake_rgb)
-    wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((image_bw[0].cpu(), image_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
-
+    wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((real_bw[0].cpu(), real_rgb[0].cpu(), fake_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
     torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
     os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models
 

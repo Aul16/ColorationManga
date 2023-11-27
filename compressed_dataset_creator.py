@@ -46,3 +46,4 @@ with open("./compressed_data.csv", "w", newline='') as csvfile:
     for tensor_name in tensors:
         csvfile.writelines(f"{tensor_name}\n")
 
+torch.cuda.empty_cache()

@@ -19,10 +19,10 @@ class Discriminator(nn.Module):
         self.linear = nn.LazyLinear(1)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, x, y):
-        x = torch.cat((x, y), dim=1)
+    def forward(self, x, y=None):
+        if y != None:
+            x = torch.cat((x, y), dim=1)
         x = self.cnn(x)
-        print(x.shape)
         x = self.flatten(x)
         x = self.linear(x)
         x = self.sigmoid(x)
@@ -31,5 +31,5 @@ class Discriminator(nn.Module):
 
 if __name__ == "__main__":
     from torchinfo import summary
-    model = Discriminator(32, 16)
-    print(summary(model, ((8, 24, 128, 96), (8, 8, 128, 96))))
+    model = Discriminator(4, 16)
+    print(summary(model, ((32, 3, 1024, 768), (32, 1, 1024, 768))))
