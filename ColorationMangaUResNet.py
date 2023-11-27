@@ -21,7 +21,7 @@ SAVE_PATH = "./saves"
 
 wandb.login()
 
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 
 ENCODER_CHANNEL_OUTPUT = 8
 DECODER_CHANNEL_INPUT = 24
@@ -142,7 +142,7 @@ for i in range(epoch):
     image_bw = decoderbw(real_bw.to(device))
     image_bw = image_bw.expand(-1, 3, -1, -1)
     image_rgb = decoderrgb(fake_rgb)
-    wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((image_bw[0], image_rgb[0]), dim=2).permute(1,2,0).detach().numpy())})
+    wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((image_bw[0].cpu(), image_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
 
     torch.save(model, f"{SAVE_PATH}/uresnet/uresnet{i}.pth")
     os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models

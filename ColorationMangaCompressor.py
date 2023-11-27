@@ -30,8 +30,8 @@ PATH_BW = "./dataset/bw"
 CSV_PATH = "./images.csv"
 SAVE_PATH = "./saves"
 
-ENCODER_CHANNEL_OUTPUT = 8
-DECODER_CHANNEL_INPUT = 24
+ENCODER_CHANNEL_OUTPUT = 16
+DECODER_CHANNEL_INPUT = 48
 
 data = AutoEncoderDataset(CSV_PATH, IMG_SHAPE, PATH_BW, PATH_RGB)
 train_size = int(0.9 * len(data))
@@ -62,8 +62,8 @@ device = (
 
 run = wandb.init(
     # Nom du Projet
-    project="Coloration Manga",
-    name="Encoder",
+    project="Coloration Manga Encoder",
+    name="Encoder 16 channels",
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
@@ -115,8 +115,8 @@ wandb.finish()
 
 run = wandb.init(
     # Nom du Projet
-    project="Coloration Manga",
-    name="Decoder",
+    project="Coloration Manga Decoder",
+    name="Decoder 48 channels",
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,

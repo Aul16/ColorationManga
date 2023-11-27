@@ -35,10 +35,8 @@ for i, imgs in enumerate(data):
     rgb = rgb.unsqueeze(0)
     compressed_bw = encodebw(bw.to(device))[0]
     compressed_rgb = encodergb(rgb.to(device))[0]
-    torch.save(compressed_bw, f"{NEW_SAVE_PATH}/bw/tensor{i}.pt")
-    torch.save(compressed_rgb, f"{NEW_SAVE_PATH}/rgb/tensor{i}.pt")
-    if i > 50:
-        break
+    torch.save(compressed_bw.cpu(), f"{NEW_SAVE_PATH}/bw/tensor{i}.pt")
+    torch.save(compressed_rgb.cpu(), f"{NEW_SAVE_PATH}/rgb/tensor{i}.pt")
     
 # Create CSV file
 import os
