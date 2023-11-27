@@ -14,6 +14,7 @@ PATH = os.path.dirname(os.path.abspath(__file__))  # Get the path of the files
 os.chdir(PATH)  # Change the current working directory to the path of the files
 torch.cuda.empty_cache()
 
+IMG_SHAPE = (1024, 768)
 PATH_RGB = "./dataset/rgb"
 PATH_BW = "./dataset/bw"
 CSV_PATH = "./images.csv"
@@ -21,12 +22,12 @@ SAVE_PATH = "./saves"
 
 wandb.login()
 
-BATCH_SIZE = 64
+BATCH_SIZE = 32
 
 ENCODER_CHANNEL_OUTPUT = 1
 DECODER_CHANNEL_INPUT = 3
 
-data = AutoEncoderDataset(CSV_PATH, PATH_BW, PATH_RGB)
+data = AutoEncoderDataset(CSV_PATH, IMG_SHAPE, PATH_BW, PATH_RGB)
 train_size = int(0.9 * len(data))
 test_size = len(data) - train_size
 
