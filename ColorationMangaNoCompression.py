@@ -69,7 +69,7 @@ discriminator = Discriminator(4, 16).to(device)  # Channel in: 3 (RGB), 1 (BW)
 loss_bce = nn.BCELoss()
 loss_mse = nn.MSELoss()
 optimizer_unet = torch.optim.Adam(model.parameters(), lr=0.001)
-optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.001)
+optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.0005)
 
 epoch = 100
 for i in range(epoch):
@@ -78,18 +78,20 @@ for i in range(epoch):
     for batch in x_train:
         ############################################################
         real_bw, real_rgb = batch
-        fake_rgb = model(real_bw.to(device))
+        real_bw = real_bw.to(device)
+        real_rgb = real_rgb.to(device)
+        fake_rgb = model(real_bw)
 
         # Entraine le discriminateur
         discriminator.zero_grad()
         
-        real_pred = discriminator(real_rgb.to(device), real_bw.to(device))
-        fake_pred = discriminator(fake_rgb, real_bw.to(device))
+        real_pred = discriminator(real_rgb, real_bw)
+        fake_pred = discriminator(fake_rgb, real_bw)
 
         fake_labels = torch.zeros_like(fake_pred)
-        fake_labels = fake_labels.type_as(real_rgb)
+        fake_labels = fake_labels.type_as(real_rgb).to(device)
         real_labels = torch.ones_like(real_pred)
-        real_labels = real_labels.type_as(real_rgb)
+        real_labels = real_labels.type_as(real_rgb).to(device)
 
         ### On calcule la loss pour les vraies et les fausses images
 
@@ -108,11 +110,11 @@ for i in range(epoch):
         ### Entraine le UResNet
 
         model.zero_grad()
-        fake_rgb = model(real_bw.to(device))
-        fake_pred = discriminator(fake_rgb, real_bw.to(device))
+        fake_rgb = model(real_bw)
+        fake_pred = discriminator(fake_rgb, real_bw)
 
         real_labels = torch.ones_like(fake_pred)
-        real_labels = real_labels.type_as(real_rgb)
+        real_labels = real_labels.type_as(real_rgb).to(device)
 
         ### On calcule la loss pour le générateur
 
@@ -144,7 +146,7 @@ for i in range(epoch):
     
     wandb.log({"Epoch": i, "Validation Image": wandb.Image(torch.cat((real_bw[0].cpu(), real_rgb[0].cpu(), fake_rgb[0].cpu()), dim=2).permute(1,2,0).detach().numpy())})
     torch.save(model, f"{SAVE_PATH}/uresnet_no_comp/uresnet{i}.pth")
-    os.system(f"rm -rf {SAVE_PATH}/uresnet/uresnet{i-3}.pth")  # Keep 3 last models
+    os.system(f"rm -rf {SAVE_PATH}/uresnet_no_comp/uresnet{i-3}.pth")  # Keep 3 last models
 
 wandb.finish()
 torch.cuda.empty_cache()
