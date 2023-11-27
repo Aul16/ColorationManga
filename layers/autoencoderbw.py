@@ -4,6 +4,7 @@ try:
 except:
     from encoder import Encoder
     from decoder import Decoder
+    
 import torch.nn as nn
 
 

@@ -62,6 +62,7 @@ device = (
 #
 ##############################################################################################################
 
+epoch = 3
 run = wandb.init(
     # Nom du Projet
     project="Coloration Manga",
@@ -69,7 +70,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 5,
+    "epochs": epoch,
     "batch_size": BATCH_SIZE,
     "loss_function": "MSE",
     "architecture": "Encoder",
@@ -82,7 +83,6 @@ model = AutoEncoderBW(ENCODER_CHANNEL_OUTPUT).to(device)
 loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-epoch = 5
 for i in range(epoch):
 
     for batch in x_train:
@@ -130,6 +130,7 @@ x_test = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = True)
 #
 ##############################################################################################################
 
+epoch = 3
 run = wandb.init(
     # Nom du Projet
     project="Coloration Manga",
@@ -137,7 +138,7 @@ run = wandb.init(
     # Sauvegarde des hyperparamètres
     config={
     "learning_rate": 0.001,
-    "epochs": 5,
+    "epochs": epoch,
     "batch_size": BATCH_SIZE,
     "loss_function": "MSE",
     "architecture": "Decoder",
@@ -150,7 +151,6 @@ model = AutoEncoderRGB(DECODER_CHANNEL_INPUT).to(device)
 loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-epoch = 5
 for i in range(epoch):
 
     for batch in x_train:
