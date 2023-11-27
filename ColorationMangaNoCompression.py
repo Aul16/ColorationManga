@@ -21,7 +21,7 @@ SAVE_PATH = "./saves"
 
 wandb.login()
 
-BATCH_SIZE = 64
+BATCH_SIZE = 16
 
 ENCODER_CHANNEL_OUTPUT = 1
 DECODER_CHANNEL_INPUT = 3
@@ -62,7 +62,7 @@ run = wandb.init(
     "decoder_channel_input": DECODER_CHANNEL_INPUT
     })
 
-model = UResNet(n=32, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INPUT).to(device)
+model = UResNet(n=16, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INPUT).to(device)
 discriminator = Discriminator(4, 16).to(device)  # Channel in: 3 (RGB), 1 (BW)
 
 loss_bce = nn.BCELoss()
