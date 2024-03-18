@@ -36,6 +36,14 @@ Le dataset est alors prêt à être utilisé.
 
 ## Exemples de résultats
 
+De gauche à droite, on a :
+- l'image en noir et blanc
+- l'image colorée d'origine
+- l'image colorée par le modèle
+
+![media_images_Validation Image_2100_8c707e38b91c65e0012c](https://github.com/Aul16/ColorationManga/assets/39156836/f9641e32-5cdd-4674-994a-f5c1498bc33c)
+
+
 ## Limitations
 
 Le dataset en noir et blanc étant crée par un algorithme à partir de celui en rgb pour créer des paires d'images, ce modèle peine à généraliser sur des images de mangas quelconques. Un nouveau modèle d'apprentissage non supervisé est en cours de développement pour régler ce problème.
