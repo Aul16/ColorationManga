@@ -1,5 +1,8 @@
 # Modèle de coloration de manga
 
+Ce modèle est en cours de développement et n'est pas encore terminé.
+Kaggle ayant servi de dataset pour l'entrainement : https://www.kaggle.com/datasets/ultraamvking/colored-manga
+
 ## Prérequis
 
 - Python installé
@@ -19,3 +22,18 @@ Il suffit de mettre l'image en noir et blanc dans le dossier, nommée 'image.jpg
 Pour entrainer l'IA, il faut avoir WandB et pandas d'installé en plus (librairies python).
 
 Par défaut, en lançant `train.py`, l'IA s'entraine de zero et enregistre ses poids à chaque epoch. Si vous souhaitez reprendre l'entrainement à partir de poids préentrainés, il suffit de décommenter les lignes 69 et 70 de `train.py`. Les informations seront affichées sur WandB.
+
+### Mise en place du dataset
+
+- Installer la libraire opencv
+- Mettre les images dans `dataset/rgb/`
+- Créer un dosser `dataset/bw/`
+- Lancer `utils/setup_dataset.py`
+
+Le dataset est alors prêt à être utilisé.
+
+## Exemples de résultats
+
+## Limitations
+
+Le dataset en 
