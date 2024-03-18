@@ -15,9 +15,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else torch.device('cpu
 IMG_SHAPE = (512, 512)
 PATH_RGB = "./dataset/rgb"
 PATH_BW = "./dataset/bw"
-SAVE_PATH = "./weights"
 
-model = torch.load(f"{SAVE_PATH}/uresnet.pth", map_location=device)
+model = torch.load(f"weights.pth", map_location=device)
 
 image = read_image("./image.jpg")
 image = transforms.Resize(IMG_SHAPE)(image)

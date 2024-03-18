@@ -18,7 +18,6 @@ IMG_SHAPE = (512, 512)
 PATH_RGB = "./dataset/rgb"
 PATH_BW = "./dataset/bw"
 CSV_PATH = "./dataset/images.csv"
-SAVE_PATH = "./saves"
 EPOCH = 7
 
 wandb.login()
@@ -26,8 +25,9 @@ wandb.login()
 BATCH_SIZE = 16
 BATCH_TEST = 16
 
-ENCODER_CHANNEL_OUTPUT = 1
-DECODER_CHANNEL_INPUT = 3
+MODEL_INPUT_CHANNEL = 1
+MODEL_OUTPUT_CHANNEL = 3
+LEARNING_RATE = 0.001
 
 data = LoadDataset(CSV_PATH, IMG_SHAPE, PATH_BW, PATH_RGB)
 train_size = int(0.9 * len(data))
@@ -51,30 +51,28 @@ device = torch.device('cuda' if torch.cuda.is_available() else torch.device('cpu
 run = wandb.init(
     # Nom du Projet
     project="Coloration Manga",
-    name="UResNet LAB",
+    name="UResNet",
     # Sauvegarde des hyperparamètres
     config={
-    "learning_rate": 0.001,
+    "learning_rate": LEARNING_RATE,
     "epochs": EPOCH,
     "batch_size": BATCH_SIZE,
     "loss_function": "MSE + BCE",
     "architecture": "UResNet",
     "dataset": "dataset",
-    "optimizer": "Adam",
-    "encoder_channel_output": ENCODER_CHANNEL_OUTPUT,
-    "decoder_channel_input": DECODER_CHANNEL_INPUT
+    "optimizer": "Adam"
     })
 
-model = UResNet(n=64, channel_in=ENCODER_CHANNEL_OUTPUT, channel_out=DECODER_CHANNEL_INPUT).to(device)
+model = UResNet(n=64, channel_in=MODEL_INPUT_CHANNEL, channel_out=MODEL_OUTPUT_CHANNEL).to(device)
 discriminator = Discriminator(4, 64).to(device)
 
-#model = torch.load(f"{SAVE_PATH}/uresnet.pth")                                     # Load the model if we want to continue the training
-#discriminator = torch.load(f"{SAVE_PATH}/discriminator.pth")
+#model = torch.load(f"weights.pth", map_location=device)                  # Load the model if we want to continue the training
+#discriminator = torch.load(f"discriminator.pth", map_location=device)    # Load the discriminator if we want to continue the training
 
 loss_bce = nn.BCELoss()
 loss_mse = nn.MSELoss()
-optimizer_unet = torch.optim.Adam(model.parameters(), lr=0.001)
-optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=0.0005)
+optimizer_unet = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+optimizer_disc = torch.optim.Adam(discriminator.parameters(), lr=LEARNING_RATE/2)
 
 for i in range(EPOCH):
     
@@ -162,8 +160,8 @@ for i in range(EPOCH):
     
         wandb.log({"Epoch": i}, commit=True)
         
-    torch.save(model, f"{SAVE_PATH}/uresnet.pth")
-    torch.save(discriminator, f"{SAVE_PATH}/discriminator.pth")
+    torch.save(model, "weights.pth")
+    torch.save(discriminator, "discriminator.pth")
 
 wandb.finish()
 torch.cuda.empty_cache()

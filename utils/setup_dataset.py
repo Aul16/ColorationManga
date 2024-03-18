@@ -3,7 +3,7 @@ import cv2 as cv
 from multiprocessing import Pool
 
 PATH = "./dataset"
-CSV_PATH = "./images.csv"
+CSV_PATH = "./dataset/images.csv"
 
 Color_img = os.listdir(f"{PATH}/rgb/")
 
