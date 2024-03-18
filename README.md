@@ -3,6 +3,8 @@
 Ce modèle est en cours de développement et n'est pas encore terminé.
 Kaggle ayant servi de dataset pour l'entrainement : https://www.kaggle.com/datasets/ultraamvking/colored-manga
 
+L'architecture est basée sur Pix2Pix, dont le papier est à ce lien : https://arxiv.org/abs/1611.07004
+
 ## Prérequis
 
 - Python installé
@@ -36,4 +38,4 @@ Le dataset est alors prêt à être utilisé.
 
 ## Limitations
 
-Le dataset en 
+Le dataset en noir et blanc étant crée par un algorithme à partir de celui en rgb pour créer des paires d'images, ce modèle peine à généraliser sur des images de mangas quelconques. Un nouveau modèle d'apprentissage non supervisé est en cours de développement pour régler ce problème.
