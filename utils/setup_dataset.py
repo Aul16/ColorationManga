@@ -19,12 +19,13 @@ def convert(img):
         print(e)
 
 
-with Pool() as p:
-        p.map(convert, Color_img)
+if __name__ == "__main__":
+    with Pool() as p:
+            p.map(convert, Color_img)
 
 
-imgs = os.listdir(f"{PATH}/bw/")
+    imgs = os.listdir(f"{PATH}/bw/")
 
-with open(CSV_PATH, "w", newline='') as csvfile:
-    for img in imgs:
-        csvfile.writelines(f"{img}\n")
+    with open(CSV_PATH, "w", newline='') as csvfile:
+        for img in imgs:
+            csvfile.writelines(f"{img}\n")
