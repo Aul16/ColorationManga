@@ -1,49 +1,53 @@
-# Modèle de coloration de manga
+# Manga Coloring Model
 
-Ce modèle est en cours de développement et n'est pas encore terminé.
-Kaggle ayant servi de dataset pour l'entrainement : https://www.kaggle.com/datasets/ultraamvking/colored-manga
+This model is currently in development and is not yet complete.  
+Kaggle was used as the dataset for training: [Kaggle Dataset](https://www.kaggle.com/datasets/ultraamvking/colored-manga)  
 
-L'architecture est basée sur Pix2Pix, dont le papier est à ce lien : https://arxiv.org/abs/1611.07004
+The architecture is based on Pix2Pix, whose paper can be found here: [Pix2Pix Paper](https://arxiv.org/abs/1611.07004)  
 
-## Prérequis
+## Prerequisites
 
-- Python installé
-- Librairie pytorch ( https://pytorch.org/ )
-- Installer les poids ( https://drive.google.com/file/d/1WPh5zppEproC_YDjSYPmkQ9Z50ikiwIK/view?usp=drive_link )
+- Installed Python  
+- PyTorch library ([https://pytorch.org/](https://pytorch.org/))  
+- Download the pretrained weights ([Google Drive Link](https://drive.google.com/file/d/1WPh5zppEproC_YDjSYPmkQ9Z50ikiwIK/view?usp=drive_link))  
 
 ## Installation
 
-- Cloner le répertoire
+- Clone the repository  
 
-## Inférence
+## Inference
 
-Il suffit de mettre l'image en noir et blanc dans le dossier, nommée 'image.jpg' par défaut, et de lancer le fichier `infer.py`. Celui-ci enregistre le sortie sous le nom `image_colorized.png`.
+Simply place the black-and-white image in the folder, named `image.jpg` by default, and run the `infer.py` script.  
+The output will be saved as `image_colorized.png`.  
 
-## Entrainement
+## Training
 
-Pour entrainer l'IA, il faut avoir WandB et pandas d'installé en plus (librairies python).
+To train the AI, you need to have WandB and pandas installed (Python libraries).  
 
-Par défaut, en lançant `train.py`, l'IA s'entraine de zero et enregistre ses poids à chaque epoch. Si vous souhaitez reprendre l'entrainement à partir de poids préentrainés, il suffit de décommenter les lignes 69 et 70 de `train.py`. Les informations seront affichées sur WandB.
+By default, running `train.py` trains the AI from scratch and saves its weights at each epoch.  
+If you want to resume training from pretrained weights, uncomment lines 69 and 70 in `train.py`.  
+Training information will be displayed on WandB.  
 
-### Mise en place du dataset
+### Dataset Setup
 
-- Installer la libraire opencv
-- Mettre les images dans `dataset/rgb/`
-- Créer un dosser `dataset/bw/`
-- Lancer `utils/setup_dataset.py`
+- Install the OpenCV library  
+- Place the images in `dataset/rgb/`  
+- Create a folder `dataset/bw/`  
+- Run `utils/setup_dataset.py`  
 
-Le dataset est alors prêt à être utilisé.
+The dataset is now ready to use.  
 
-## Exemples de résultats
+## Example Results
 
-De gauche à droite, on a :
-- l'image en noir et blanc
-- l'image colorée d'origine
-- l'image colorée par le modèle
+From left to right, we have:  
+- The black-and-white image  
+- The original colored image  
+- The model-generated colored image  
 
-![media_images_Validation Image_2100_8c707e38b91c65e0012c](https://github.com/Aul16/ColorationManga/assets/39156836/f9641e32-5cdd-4674-994a-f5c1498bc33c)
-
+![media_images_Validation Image_2100_8c707e38b91c65e0012c](https://github.com/Aul16/ColorationManga/assets/39156836/f9641e32-5cdd-4674-994a-f5c1498bc33c)  
 
 ## Limitations
 
-Le dataset en noir et blanc étant crée par un algorithme à partir de celui en rgb pour créer des paires d'images, ce modèle peine à généraliser sur des images de mangas quelconques. Un nouveau modèle d'apprentissage non supervisé est en cours de développement pour régler ce problème.
+Since the black-and-white dataset is created by an algorithm from the RGB dataset to form image pairs,  
+this model struggles to generalize on arbitrary manga images.  
+A new unsupervised learning model is being developed to address this issue.  
